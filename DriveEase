@@ -1,0 +1,152 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <windows.h>
+
+struct Car {
+    char brand[50];     // Марка автомобіля
+    char model[50];     // Модель автомобіля
+    int year;           // Рік випуску автомобіля
+    float price;        // Ціна оренди автомобіля
+    bool available;     // Наявність автомобіля для оренди (true - доступний, false - вже орендований)
+};
+
+void RentCar(struct Car *cars, int size) {
+    char brand[50];
+    char model[50];
+    int year;
+    int foundIndex = -1;
+
+    printf("Введіть марку автомобіля: ");
+    scanf("%s", brand);
+
+    printf("Введіть модель автомобіля: ");
+    scanf("%s", model);
+
+    printf("Введіть рік випуску автомобіля: ");
+    scanf("%d", &year);
+
+    // Пошук автомобіля за маркою, моделлю та роком випуску
+    for (int i = 0; i < size; i++) {
+        if (strcmp(cars[i].brand, brand) == 0 && strcmp(cars[i].model, model) == 0 && cars[i].year == year && cars[i].available) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    // Якщо знайдено доступний автомобіль за вказаними параметрами
+    if (foundIndex != -1) {
+        cars[foundIndex].available = false;  // Позначити автомобіль як орендований
+        printf("Автомобіль успішно орендовано!\n");
+    } else {
+        printf("Автомобіль не знайдено або не доступний для оренди.\n");
+    }
+}
+
+void ReturnCar(struct Car *cars, int size) {
+    char brand[50];
+    char model[50];
+    int year;
+    int foundIndex = -1;
+
+    printf("Введіть марку автомобіля: ");
+    scanf("%s", brand);
+
+    printf("Введіть модель автомобіля: ");
+    scanf("%s", model);
+
+    printf("Введіть рік випуску автомобіля: ");
+    scanf("%d", &year);
+
+    // Пошук орендованого автомобіля за маркою, моделлю та роком випуску
+    for (int i = 0; i < size; i++) {
+        if (strcmp(cars[i].brand, brand) == 0 && strcmp(cars[i].model, model) == 0 && cars[i].year == year && !cars[i].available) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    // Якщо знайдено орендований автомобіль за вказаними параметрами
+    if (foundIndex != -1) {
+        cars[foundIndex].available = true;  // Позначити автомобіль як доступний
+        printf("Автомобіль успішно повернуто!\n");
+    } else {
+        printf("Автомобіль не знайдено або вже повернуто.\n");
+    }
+}
+
+void AvailableCars(const struct Car *cars, int size) {
+    printf("Доступні автомобілі:\n");
+    printf("Марка\t\tМодель\t\tРік\t\tЦіна\n");
+    for (int i = 0; i < size; i++) {
+        if (cars[i].available) {
+            printf("%-10s\t%-10s\t%d\t\t%.2f\n", cars[i].brand, cars[i].model, cars[i].year, cars[i].price);
+        }
+    }
+}
+
+int main() {
+    SetConsoleCP (1251);
+    SetConsoleOutputCP (1251);
+    struct Car cars[] = {
+        { "Toyota", "Camry", 2018, 50.0, true },
+        { "Honda", "Civic", 2019, 45.0, true },
+        { "Ford", "Mustang", 2020, 80.0, true },
+        { "Chevrolet", "Cruze", 2017, 40.0, true },
+        { "BMW", "X5", 2021, 120.0, true }
+    };
+    int size = sizeof(cars) / sizeof(cars[0]);
+
+    int choice = -1;
+
+    do {
+        printf("Меню:\n");
+        printf("1) Орендувати автомобіль\n");
+        printf("2) Повернути автомобіль\n");
+        printf("3) Переглянути доступні автомобілі\n");
+        printf("4) Вийти\n");
+
+        bool check = true;
+
+        do {
+            printf("Виберіть опцію: ");
+
+            // Перевірка на коректне введення
+            if (scanf("%d", &choice) != 1) {
+                printf("\nНекоректне введення. Будь ласка, спробуйте знову.\n");
+
+                // Очищення буферу вводу
+                while (getchar() != '\n');
+
+                // Продовження циклу з нового кроку
+                continue;
+            } else {
+                check = false;
+            }
+
+        } while (check);
+
+        switch (choice) {
+            case 1:
+                RentCar(cars, size);
+                break;
+            case 2:
+                ReturnCar(cars, size);
+                break;
+            case 3:
+                AvailableCars(cars, size);
+                break;
+            case 4:
+                printf("Програма завершена.\n");
+                printf("\n\n Практичне завдання\n Виконали студенти НУБІП групи ІПЗ-22009б \n Вітківський Максим Сергійович\n Ядвіжен Вадим\n\n");
+
+                break;
+            default:
+                printf("Некоректний вибір. Будь ласка, спробуйте знову.\n");
+                break;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
